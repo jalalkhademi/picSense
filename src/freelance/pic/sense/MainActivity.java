@@ -19,6 +19,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Spinner;
 
 @SuppressLint("SimpleDateFormat")
 public class MainActivity extends Activity {
@@ -27,6 +31,8 @@ public class MainActivity extends Activity {
 
 	MyCameraPic mCameraPic;
 	SurfaceView preview;
+	Spinner picSizeSelector;
+	private SpinAdapter adapter;
 	
 	public Accel accel;
 	private Gyro gyro;
@@ -38,7 +44,32 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		ctx = getApplicationContext();
+		
+		preview = (SurfaceView) findViewById(R.id.preview);
+		mCameraPic = new MyCameraPic(preview);
+		mCameraPic.onResume();
+		
+		picSizeSelector = (Spinner) findViewById(R.id.resSelector);
+		adapter = new SpinAdapter(getApplicationContext(),
+	            android.R.layout.simple_spinner_item,
+	            mCameraPic.getPictureSizes());
+		picSizeSelector.setAdapter(adapter);
+		
+		picSizeSelector.setOnItemSelectedListener(new OnItemSelectedListener() {
 
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				mCameraPic.setPictureSize(adapter.getItem(position));
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@Override
@@ -63,10 +94,6 @@ public class MainActivity extends Activity {
 		gyro = new Gyro(ctx);
 		rotation = new Rotation(ctx);
 		orientation= new Orient(ctx);
-
-		preview = (SurfaceView) findViewById(R.id.preview);
-		mCameraPic = new MyCameraPic(preview);
-		mCameraPic.onResume();
 	}
 
 	private String floatToString(float[] input) {

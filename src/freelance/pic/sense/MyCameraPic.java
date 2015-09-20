@@ -23,6 +23,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -154,9 +155,23 @@ public class MyCameraPic
 					cameraConfigured = true;
 				}
 			}
-	 	}
+	  	}
 	}
 
+	public void setPictureSize(Size size)
+	{
+		Camera.Parameters parameters = camera.getParameters();
+		parameters.setPictureSize(size.width, size.height);
+		camera.setParameters(parameters);
+	}
+	
+	public List<Size> getPictureSizes()
+	{
+
+		Camera.Parameters parameters = camera.getParameters();
+		return parameters.getSupportedPictureSizes();
+	}
+	
 	private void startPreview() {
 		if (cameraConfigured && camera != null) {
 			camera.startPreview();
