@@ -89,16 +89,22 @@ public class MainActivity extends Activity {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 
-		String csv = timeStamp + ",Accel:" + floatToString(accel.getValues()) + ",Gyro:"
-				+ floatToString(gyro.getValues()) + ",Orientation:"
-				+ floatToString(orientation.getValues()) + ",Rotation:"
+		String csv = timeStamp + ", " + floatToString(accel.getValues()) + ", "
+				+ floatToString(gyro.getValues()) + ", "
+				+ floatToString(orientation.getValues()) + ", "
 				+ floatToString(rotation.getValues());
 
 		try {
 			File root = Environment.getExternalStorageDirectory();
 			File gpxfile = new File(root, "cSv");
+			String header = "";
+			if(!gpxfile.exists())
+			{
+				header = "TimeStamp, Accel, Orientation, Rotation\n";
+			}
 			FileWriter writer = new FileWriter(gpxfile, true);
 
+			writer.append(header);
 			writer.append(csv);
 			writer.append('\n');
 
